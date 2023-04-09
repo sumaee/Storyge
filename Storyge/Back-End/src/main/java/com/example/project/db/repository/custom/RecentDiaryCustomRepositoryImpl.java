@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.example.project.follow.model.entity.QFollow.follow;
-import static com.example.project.recentdiary.model.entity.QRecentDiary.recentDiary;
+import static com.example.project.db.entity.QFollow.follow;
+import static com.example.project.db.entity.QRecentDiary.recentDiary;
+
 
 @Repository
 public class RecentDiaryCustomRepositoryImpl implements RecentDiaryCustomRepository {

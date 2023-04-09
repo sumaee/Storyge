@@ -60,13 +60,12 @@ dependencies {
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-    //querydsl 추가
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
-//    // QueryDSL
-//    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-//    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-//    implementation "com.querydsl:querydsl-core:${queryDslVersion}"  // 한개 더 추가!
+    //querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.4.10'
+    annotationProcessor "com.querydsl:querydsl-apt"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     compileOnly 'org.projectlombok:lombok'
     compileOnly 'org.springframework.cloud:spring-cloud-starter-aws:2.0.2.RELEAS'
@@ -81,21 +80,26 @@ dependencies {
 
 //querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
+
 querydsl {
+    library = "com.querydsl:querydsl-apt"
     jpa = true
     querydslSourcesDir = querydslDir
 }
+
 sourceSets {
     main.java.srcDir querydslDir
 }
+
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
     querydsl.extendsFrom compileClasspath
 }
+
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
+}
+jar {
+    enabled = false
 }
 //querydsl 추가 끝
 

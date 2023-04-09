@@ -2,8 +2,8 @@ package com.example.project.db.repository.custom;
 
 import com.example.project.dto.common.DailyEmotionStatistic;
 import com.example.project.dto.common.EmotionStatistic;
-import com.example.project.diary.model.dto.QDailyEmotionStatistic;
-import com.example.project.diary.model.dto.QEmotionStatistic;
+import com.example.project.dto.common.QDailyEmotionStatistic;
+import com.example.project.dto.common.QEmotionStatistic;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,8 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.project.diary.model.entity.QDiary.diary;
+import static com.example.project.db.entity.QDiary.diary;
+
 
 @Repository
 public class DiaryCustomRepositoryImpl implements DiaryCustomRepository {

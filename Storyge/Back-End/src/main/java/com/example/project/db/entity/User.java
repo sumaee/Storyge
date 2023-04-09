@@ -1,6 +1,5 @@
 package com.example.project.db.entity;
 
-import com.example.project.user.model.entity.BaseTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
