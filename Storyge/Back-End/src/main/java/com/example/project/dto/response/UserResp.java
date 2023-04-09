@@ -1,0 +1,29 @@
+package com.example.project.dto.response;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value = "사용자 정보", description = "사용자 정보들이 담김")
+public class UserResp {
+
+    @ApiModelProperty(value = "사용자 Id(Pk값)", example = "0")
+    private Long userId;
+    @ApiModelProperty(value = "사용자 email")
+    private String email;
+    @ApiModelProperty(value = "사용자 nickname")
+    private String nickname;
+    @ApiModelProperty(value = "사용자 프로필 이미지 url")
+    private String profileImg;
+    @ApiModelProperty(value = "사용자의 follower 수")
+    private Long follower;
+    @ApiModelProperty(value = "사용자의 following 수 ")
+    private Long following;
+}

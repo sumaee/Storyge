@@ -1,12 +1,12 @@
 package com.example.project.config;
 
-import com.example.project.user.model.jwt.JwtAuthenticationFilter;
-import com.example.project.user.model.jwt.JwtExceptionFilter;
-import com.example.project.user.model.jwt.TokenProvider;
-import com.example.project.user.model.oauth.CustomOAuth2AuthorizationRequestRepository;
-import com.example.project.user.model.oauth.CustomOAuth2UserService;
-import com.example.project.user.model.oauth.Handler.OAuth2FailureHandler;
-import com.example.project.user.model.oauth.Handler.OAuth2SuccessHandler;
+import com.example.project.security.auth.JwtAuthenticationFilter;
+import com.example.project.security.auth.JwtExceptionFilter;
+import com.example.project.security.auth.JwtTokenProvider;
+import com.example.project.security.oauth2.CustomOAuth2AuthorizationRequestRepository;
+import com.example.project.security.oauth2.CustomOAuth2UserService;
+import com.example.project.security.handler.OAuth2FailureHandler;
+import com.example.project.security.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final TokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final CorsConfig corsConfig;
     private final CustomOAuth2AuthorizationRequestRepository<OAuth2AuthorizationRequest> customOAuth2AuthorizationRequestRepository;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .successHandler(oAuth2SuccessHandler)
                 .failureHandler(oAuth2FailureHandler)
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
         return http.build();
     }

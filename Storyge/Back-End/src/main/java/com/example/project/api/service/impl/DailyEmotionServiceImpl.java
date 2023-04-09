@@ -1,0 +1,84 @@
+package com.example.project.api.service.impl;
+
+import com.example.project.api.service.DailyEmotionService;
+import com.example.project.db.entity.DailyEmotion;
+import com.example.project.db.entity.User;
+import com.example.project.db.repository.DailyEmotionRepository;
+import com.example.project.db.repository.UserRepository;
+import com.example.project.dto.common.DailyEmotionDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class DailyEmotionServiceImpl implements DailyEmotionService {
+
+    private final DailyEmotionRepository dailyEmotionRepository;
+    private final UserRepository userRepository;
+
+    @Override
+    public boolean insertDailyEmotion(DailyEmotionDto dailyEmotionDto) {
+        Optional<User> optionalUser = userRepository.findById(dailyEmotionDto.getUserId());
+        if (optionalUser.isEmpty()) {
+            return false;
+        }
+        dailyEmotionRepository.save(toEntity(dailyEmotionDto));
+        return true;
+    }
+
+    /*
+    해당 날짜 일기가 있는지 확인하기 위한 조회
+     */
+    @Override
+    public Optional<DailyEmotion> selectOneDailyEmotion(Long userId, LocalDate date) {
+        return dailyEmotionRepository.findByUser_UserIdAndCreatedAt(userId, date);
+    }
+
+    /*
+    캘린더 조회할 때 일별 감정통계 조회
+     */
+    @Override
+    public List<DailyEmotionDto> selectAllDailyEmotion(Long userId, String stringDate) {
+        List<DailyEmotionDto> dailyEmotionDtoList = null;
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            return null;
+        }
+
+        LocalDate date = LocalDate.parse(stringDate); //convertDateType.stringDateToDateTime(stringDate);
+        LocalDate firstOfMonth = date.withDayOfMonth(1); // 주어진 날짜의 1번째 날로 날짜 값 변경
+        LocalDate lastOfMonth = date.withDayOfMonth(date.lengthOfMonth()); // 주어진 날짜의 마지막 날로 날짜 값 변경
+        // 조회결과 리스트로 받아오기
+        List<DailyEmotion> dailyEmotions = dailyEmotionRepository.findAllByUser_UserIdAndCreatedAtBetween(userId, firstOfMonth, lastOfMonth);
+
+        // DTO 변환
+        if (!dailyEmotions.isEmpty())
+            dailyEmotionDtoList = dailyEmotions.stream().map(this::toDto).collect(Collectors.toList());
+
+
+        return dailyEmotionDtoList;
+    }
+
+    @Override
+    public void updateDailyEmotion(Long userId, LocalDate date, String emoticonName) {
+        Optional<DailyEmotion> dailyEmotion = selectOneDailyEmotion(userId, date);
+        dailyEmotion.ifPresent(emotion -> emotion.updateDailyEmotion(emoticonName));
+
+    }
+
+    @Override
+    public void deleteDailyEmotion(Long userId, LocalDate date) {
+        Optional<DailyEmotion> dailyEmotion = selectOneDailyEmotion(userId, date);
+        if (dailyEmotion.isPresent()) {
+            Long dailyId = dailyEmotion.get().getDailyId();
+            dailyEmotionRepository.deleteById(dailyId);
+        }
+    }
+}
